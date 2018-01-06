@@ -9,3 +9,34 @@ data_harvest
 3. preprocessing
 4. processed store
 	- processed data db
+
+
+
+twitter mining
+or broader social media mining customer/user attitudes
+
+twitter - tweets, retweets, dates
+facebook - posts, likes, reposts, comments, dates
+youtube - comments, views, dates
+
+1. authentication details for each
+
+2. build scripts for each
+
+flow:
+
+authenticate/connect
+run search
+collect results -> store in unique txt file
+preprocess text
+sentiment classification
+sentiment classification via trend?
+geocoding sentiment classification?
+
+
+3. master script
+
+
+
+
+
