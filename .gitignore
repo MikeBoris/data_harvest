@@ -12,3 +12,4 @@ pyvenv.cfg
 pip-selfcheck.json
 
 apiKey.py
+apiKey.pyc
