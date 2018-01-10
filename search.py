@@ -7,7 +7,7 @@
 
 	python search.py Donald Trump
 	>
-	> Searching twitter for mentions of 'Donald Trump'
+	> Searching twitter for mentions of 'Richard Branson'
 	>
 	> Results:
 	> Tweets returned: 4312
@@ -19,7 +19,10 @@
 # authenticate/connect
 import json
 from sys import argv
+
 from twython import Twython
+from textblob import TextBlob
+
 from apiKey import API_KEY, API_SECRET
 
 def authenticate(key, secret):
@@ -33,7 +36,7 @@ def search(query, key, token):
 	''' given search query, api key, and access token
 	returns twitter search results as json object '''
 	twitter = Twython(key, access_token=token)
-	json = twitter.search(q='query')
+	json = twitter.search(q=query)
 	return json
 
 def execute_search(key, secret, query):
@@ -58,7 +61,9 @@ def print_tweets(results):
 	''' given search results object
 	prints tweet text each line '''
 	for tweet in results['statuses']:
-		print(tweet['text'], '\n')
+		blob = TextBlob(tweet['text'])
+		print('Sentiment: {0}'.format(blob.sentiment.polarity))
+
 
 '''
     print 'Tweet from @%s Date: %s' % (tweet['user']['screen_nam\
@@ -70,6 +75,7 @@ def print_tweets(results):
 # collect/parse results
 # preprocess text
 # sentiment analysis
+
 # sentiment stats
 
 if __name__ == '__main__':
