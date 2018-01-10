@@ -17,7 +17,6 @@
 
 '''
 # authenticate/connect
-#
 import json
 from sys import argv
 from twython import Twython
