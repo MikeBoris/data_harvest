@@ -5,9 +5,9 @@
 	Returns descriptive stats for data retrieved
 	e.g.
 
-	python search.py Donald Trump
+	python search.py 'Richard Branson'
 	>
-	> Searching twitter for mentions of 'Richard Branson'
+	> Searching twitter for mentions of Richard Branson
 	>
 	> Results:
 	> Tweets returned: 4312
@@ -61,8 +61,9 @@ def print_tweets(results):
 	''' given search results object
 	prints tweet text each line '''
 	for tweet in results['statuses']:
-		blob = TextBlob(tweet['text'])
-		print('Sentiment: {0}'.format(blob.sentiment.polarity))
+		print(tweet['text'])
+		#blob = TextBlob(tweet['text'])
+		#print('Sentiment: {0}'.format(blob.sentiment.polarity))
 
 
 '''
