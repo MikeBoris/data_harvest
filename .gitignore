@@ -14,3 +14,4 @@ pip-selfcheck.json
 .pyc
 apiKey.py
 apiKey.pyc
+apiKey.cpython-36.pyc
