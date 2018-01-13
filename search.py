@@ -95,6 +95,13 @@ def print_json(json_object):
 	for tweet in tweets:
 		print(tweet['text'])
 
+from collections import Counter
+
+def most_common(lst):
+	data = Counter(lst)
+	return data.most_common(1)[0][0]
+
+
 def print_tweets(results):
 	''' given search results object
 	prints tweet text each line '''
@@ -104,7 +111,7 @@ def print_tweets(results):
 		print('Screen_name: ' + tweet['user']['screen_name'])
 		#print('Created_at: ' + tweet['created_at'])
 		print(tweet['text'] + '\n')
-		print(preprocess(tweet['text']))
+		print('Most common word: ' + most_common(preprocess(tweet['text'])))
 		#print('Favorite_count: {}'.format(tweet['favorited']))
 		#print('Retweet_count: {}'.format(tweet['retweeted']))
 		#print('Lang: ' + tweet['lang'])
