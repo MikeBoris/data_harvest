@@ -16,38 +16,19 @@
 	> Neutral: 903
 
 '''
-# authenticate/connect
+from collections import Counter
 import json
 from sys import argv
+import re
 
 from twython import Twython
 from textblob import TextBlob
 
+# assumes twitter api key/secret
 from apiKey import API_KEY, API_SECRET
 
-def authenticate(key, secret):
-	''' given api key and api secret
-	returns access token for twitter api '''
-	twitter = Twython(key, secret, oauth_version=2)
-	token = twitter.obtain_access_token()
-	return token
-
-def search(query, key, token):
-	''' given search query, api key, and access token
-	returns twitter search results as json object '''
-	twitter = Twython(key, access_token=token)
-	json = twitter.search(q=query, count=2)
-	return json
-
-def execute_search(key, secret, query):
-	''' given authenticated query
-	returns json data '''
-	ACCESS_TOKEN = authenticate(key, secret)
-	results = search(query, key, ACCESS_TOKEN)
-	return results
-
-import re
- 
+#--- Regex parser -----------------------------------------------------------
+# source: https://marcobonzanini.com/2015/03/09/mining-twitter-data-with-python-part-2/
 emoticons_str = r"""
     (?:
         [:=;] # Eyes
@@ -70,7 +51,32 @@ regex_str = [
     
 tokens_re = re.compile(r'('+'|'.join(regex_str)+')', re.VERBOSE | re.IGNORECASE)
 emoticon_re = re.compile(r'^'+emoticons_str+'$', re.VERBOSE | re.IGNORECASE)
+
+#--- Authenticate & Search ------------------------------------------------------
+
+def authenticate(key, secret):
+	''' given twitter api key and secret
+	returns access token for api '''
+	twitter = Twython(key, secret, oauth_version=2)
+	return twitter.obtain_access_token()
+
+def search(query, key, token, num_results):
+	''' given search query, api key, and access token
+	returns twitter search results as json object '''
+	twitter = Twython(key, access_token=token)
+	json = twitter.search(q=query, count=num_results)
+	return json
+
+def execute_search(key, secret, query, num_results=5):
+	''' given authenticated query
+	api key, secret, query string, and optional return_count
+	returns search results as json object '''
+	access_token = authenticate(key, secret)
+	results = search(query, key, access_token, num_results)
+	return results
  
+#--- Processing tweets ------------------------------------------------------------
+
 def tokenize(s):
     return tokens_re.findall(s)
  
@@ -79,10 +85,25 @@ def preprocess(s, lowercase=False):
     if lowercase:
         tokens = [token if emoticon_re.search(token) else token.lower() for token in tokens]
     return tokens
- 
-# tweet = 'RT @marcobonzanini: just an example! :D http://example.com #NLP'
-# print(preprocess(tweet))
-# ['RT', '@marcobonzanini', ':', 'just', 'an', 'example', '!', ':D', 'http://example.com', '#NLP']
+
+# in list of tokenized tweets, split into 2 new lists:
+# 1. actual words, and 
+# 2. everything else (punctuation marks, RTs, urls, etc)
+special_chars = re.compile('[:;,<>.?/\'\"{[_~`!@#$%^&*()]}]')
+
+from string import punctuation
+
+
+def remove_invalid_str(list_of_tokens):
+	''' given tokenized tweet as list of strings
+	return list w/ invalid strings removed '''
+	invalid_chars = set(punctuation)
+	for token in list_of_tokens:
+		# if there's a special char in token
+		if any(char in invalid_chars for char in token):
+			# remove token from list
+			list_of_tokens.remove(token)
+	return list_of_tokens
 
 def parse_json(json_object):
 	''' given search results as json object
@@ -95,12 +116,9 @@ def print_json(json_object):
 	for tweet in tweets:
 		print(tweet['text'])
 
-from collections import Counter
-
 def most_common(lst):
 	data = Counter(lst)
 	return data.most_common(1)[0][0]
-
 
 def print_tweets(results):
 	''' given search results object
@@ -111,7 +129,9 @@ def print_tweets(results):
 		print('Screen_name: ' + tweet['user']['screen_name'])
 		#print('Created_at: ' + tweet['created_at'])
 		print(tweet['text'] + '\n')
-		print('Most common word: ' + most_common(preprocess(tweet['text'])))
+		print(preprocess(tweet['text']))
+		print(' '.join(remove_invalid_str(preprocess(tweet['text']))))
+		print('Most common word: ' + most_common(remove_invalid_str(preprocess(tweet['text']))))
 		#print('Favorite_count: {}'.format(tweet['favorited']))
 		#print('Retweet_count: {}'.format(tweet['retweeted']))
 		#print('Lang: ' + tweet['lang'])

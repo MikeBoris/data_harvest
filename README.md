@@ -15,7 +15,7 @@ data_harvest
 twitter mining
 or broader social media mining customer/user attitudes
 
-twitter - tweets, retweets, dates
+twitter - tweets, retweets, users, dates
 facebook - posts, likes, reposts, comments, dates
 youtube - comments, views, dates
 
@@ -29,10 +29,7 @@ authenticate/connect
 run search
 collect results -> store in unique txt file
 preprocess text
-sentiment classification
-sentiment classification via trend?
-geocoding sentiment classification?
-
+sentiment analysis, classification
 
 3. master script
 
