@@ -79,6 +79,12 @@ def execute_search(key, secret, query, num_results=5):
 
 def tokenize(s):
     return tokens_re.findall(s)
+
+def tokenize2(text):
+	'''
+	Get all words from text
+	'''
+	return re.findall('[a-z]+', text.lower())
  
 def preprocess(s, lowercase=False):
     tokens = tokenize(s)
@@ -92,7 +98,6 @@ def preprocess(s, lowercase=False):
 special_chars = re.compile('[:;,<>.?/\'\"{[_~`!@#$%^&*()]}]')
 
 from string import punctuation
-
 
 def remove_invalid_str(list_of_tokens):
 	''' given tokenized tweet as list of strings
