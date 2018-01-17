@@ -1,12 +1,11 @@
 '''
-	Functions to create tweet_db,
-	and insert records in tweet_db
+	Functions to insert records into tweets table in Twitter.db
 '''
 import sqlite3
 from sqlite3 import Error
 
 def create_connection(db_file):
-    """ create a database connection to the SQLite database
+    """ create a connection to sqlite db
         specified by db_file
     :param db_file: database file
     :return: Connection object or None
@@ -19,37 +18,39 @@ def create_connection(db_file):
 
     return None
 
-def create_table(conn, create_table_sql):
-	''' create database table given db connection
-	and sql string to create table
+def insert_tweet(conn, tweet_tuple):
+	"""
+	Create new tweet record in the tweets table
 	: param conn: database connection
-	: param create_table_sql: a CREATE TABLE statement
-	: return: 
+	: param tweet_tuple: tweet tuple
+	"""
+	sql = '''
+	INSERT INTO tweets(id, user, create_date, tweet, favorite, retweet)
+	VALUES(?,?,?,?,?,?);
 	'''
-	try:
-		c = conn.cursor()
-		c.execute(create_table_sql)
-	except Error as e:
-		print(e)
+	cur = conn.cursor()
+	cur.execute(sql, tweet_tuple)
 
 '''
-Mapping tweet attributes (defined by twitter api) to fields in the tweets table:
+Mapping tweet attributes 
+(defined by twitter api: https://developer.twitter.com/en/docs/tweets/search/api-reference/get-search-tweets)
+to fields in the tweets table:
 
-	do tweets have a unique identifier? -->	id integer PRIMARY KEY,
-	tweet['user']['screen_name'] 		-->	user varchar(30) NOT NULL,
-	create_date datetime NOT NULL,
-	tweet text NOT NULL,
-	rt bin NOT NULL
+	tweet['id']						-->		id integer PRIMARY KEY,
+	tweet['user']['screen_name'] 	-->		user varchar(50) NOT NULL,
+	tweet['created_at']				-->		create_date text NOT NULL,
+	tweet['text']					-->		tweet text NOT NULL,
+	tweet['favorited']				--> 	favorite integer NULL,
+	tweet['retweeted']				--> 	retweet integer NULL
+'''
 
-create_tweet_table = '''
-CREATE TABLE IF NOT EXISTS tweets (
-	id integer PRIMARY KEY,
-	user varchar(30) NOT NULL,
-	create_date datetime NOT NULL,
-	tweet text NOT NULL,
-	rt bin NOT NULL
-	);'''
+# write function to convert booleans in tweet record to ints
+
+example_tweet = ()
 
 if __name__ == '__main__':
-    create_connection("C:\\sqlite\db\pythonsqlite.db")
+    cnxn = create_connection('Twitter.db')
+    insert_tweet(cnxn, example_tweet)
+    
+    cnxn.close()
 
