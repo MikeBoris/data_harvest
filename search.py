@@ -120,8 +120,8 @@ def print_tweets(results):
 		#print('Created_at: ' + tweet['created_at'])
 		print(tweet['text'] + '\n')
 		print(preprocess(tweet['text']))
-		print(' '.join(remove_invalid_str(preprocess(tweet['text']))))
-		print('Most common word: ' + most_common(remove_invalid_str(preprocess(tweet['text']))))
+		print(' '.join(remove_invalid_chr(preprocess(tweet['text']))))
+		print('Most common word: ' + most_common(remove_invalid_chr(preprocess(tweet['text']))))
 		#print('Favorite_count: {}'.format(tweet['favorited']))
 		#print('Retweet_count: {}'.format(tweet['retweeted']))
 		#print('Lang: ' + tweet['lang'])
@@ -192,4 +192,4 @@ if __name__ == '__main__':
 	tweets = bulk_tweet_collection(data)
 	for t in tweets:
 		print(t)
-	#print_tweets(data)
+	print_tweets(data)
