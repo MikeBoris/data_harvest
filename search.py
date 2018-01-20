@@ -17,14 +17,14 @@
 
 '''
 from collections import Counter
-import json
-from sys import argv
 import re
+from string import punctuation
+from sys import argv
 
 from twython import Twython
 from textblob import TextBlob
 
-# assumes twitter api key/secret
+# assumes twitter api key/secret in current directory
 from apiKey import API_KEY, API_SECRET
 
 #--- Regex parser -----------------------------------------------------------
@@ -75,7 +75,7 @@ def execute_search(key, secret, query, num_results=5):
 	results = search(query, key, access_token, num_results)
 	return results
  
-#--- Processing tweets ------------------------------------------------------------
+#--- Preprocessing tweets ------------------------------------------------------------
 
 def tokenize(s):
     return tokens_re.findall(s)
@@ -92,14 +92,7 @@ def preprocess(s, lowercase=False):
         tokens = [token if emoticon_re.search(token) else token.lower() for token in tokens]
     return tokens
 
-# in list of tokenized tweets, split into 2 new lists:
-# 1. actual words, and 
-# 2. everything else (punctuation marks, RTs, urls, etc)
-special_chars = re.compile('[:;,<>.?/\'\"{[_~`!@#$%^&*()]}]')
-
-from string import punctuation
-
-def remove_invalid_str(list_of_tokens):
+def remove_invalid_chr(list_of_tokens):
 	''' given tokenized tweet as list of strings
 	return list w/ invalid strings removed '''
 	invalid_chars = set(punctuation)
@@ -110,18 +103,10 @@ def remove_invalid_str(list_of_tokens):
 			list_of_tokens.remove(token)
 	return list_of_tokens
 
-def parse_json(json_object):
-	''' given search results as json object
-	parses results into list '''
-	print(json.dumps(json_object, sort_keys=True, 
-		indent=4, separators=(',', ': ')))
-
-def print_json(json_object):
-	tweets = json.load(json_object)
-	for tweet in tweets:
-		print(tweet['text'])
-
 def most_common(lst):
+	"""
+	Get most frequent token in document
+	"""
 	data = Counter(lst)
 	return data.most_common(1)[0][0]
 
@@ -203,7 +188,7 @@ to fields in the tweets table:
 
 if __name__ == '__main__':
 	print('Searching for tweets about: {0}'.format(argv[1]))
-	data = execute_search(API_KEY, API_SECRET, argv[1])
+	data = execute_search(API_KEY, API_SECRET, argv[1], num_results=argv[2])
 	tweets = bulk_tweet_collection(data)
 	for t in tweets:
 		print(t)
