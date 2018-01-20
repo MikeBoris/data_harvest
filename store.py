@@ -1,6 +1,7 @@
 '''
 	Functions to insert records into tweets table in Twitter.db
 '''
+
 import sqlite3
 from sqlite3 import Error
 
@@ -20,7 +21,7 @@ def create_connection(db_file):
 
 def insert_tweet(conn, tweet_tuple):
 	"""
-	Create new tweet record in the tweets table
+	Create single tweet record in the tweets table
 	: param conn: database connection
 	: param tweet_tuple: tweet tuple
 	"""
@@ -30,6 +31,12 @@ def insert_tweet(conn, tweet_tuple):
 	'''
 	cur = conn.cursor()
 	cur.execute(sql, tweet_tuple)
+
+# function for bulk tweet insert:
+# bulk tweet collection
+# check for and remove duplicates
+
+
 
 '''
 Mapping tweet attributes 
@@ -49,8 +56,12 @@ to fields in the tweets table:
 example_tweet = ()
 
 if __name__ == '__main__':
+
     cnxn = create_connection('Twitter.db')
+
     insert_tweet(cnxn, example_tweet)
-    
+
+    # commit transaction and close connection
+    cnxn.commit()
     cnxn.close()
 
