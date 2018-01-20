@@ -145,8 +145,36 @@ def print_tweets(results):
 		#blob = TextBlob(tweet['text'])
 		#print('Sentiment: {0}'.format(blob.sentiment.polarity))
 
+def bulk_tweet_collection(results):
+	"""
+	Converts query results object (tweets) into 
+		list of lists
+	:param results: parsed json results returned
+		by query to twitter api
+	:return: list of tweets (each a list)
+	"""
+	list_of_lists = []
+	for tweet in results['statuses']:
+		list_of_lists.append(list((tweet['id'], tweet['user']['screen_name'], 
+			tweet['created_at'], tweet['text'], tweet['favorited'],
+			tweet['retweeted'])))
+	return list_of_lists
+
+
+
 
 '''
+Mapping tweet attributes 
+(defined by twitter api: https://developer.twitter.com/en/docs/tweets/search/api-reference/get-search-tweets)
+to fields in the tweets table:
+
+	tweet['id']						-->		id integer PRIMARY KEY,
+	tweet['user']['screen_name'] 	-->		user varchar(50) NOT NULL,
+	tweet['created_at']				-->		create_date text NOT NULL,
+	tweet['text']					-->		tweet text NOT NULL,
+	tweet['favorited']				--> 	favorite integer NULL,
+	tweet['retweeted']				--> 	retweet integer NULL
+
     print 'Tweet from @%s Date: %s' % (tweet['user']['screen_nam\
                                        e'].encode('utf-8'),
                                        tweet['created_at'])
@@ -176,4 +204,7 @@ def print_tweets(results):
 if __name__ == '__main__':
 	print('Searching for tweets about: {0}'.format(argv[1]))
 	data = execute_search(API_KEY, API_SECRET, argv[1])
-	print_tweets(data)
+	tweets = bulk_tweet_collection(data)
+	for t in tweets:
+		print(t)
+	#print_tweets(data)
