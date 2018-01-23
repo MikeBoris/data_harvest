@@ -146,8 +146,6 @@ def bulk_tweet_collection(results):
 	return list_of_lists
 
 
-
-
 '''
 Mapping tweet attributes 
 (defined by twitter api: https://developer.twitter.com/en/docs/tweets/search/api-reference/get-search-tweets)
