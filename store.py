@@ -44,8 +44,8 @@ def insert_multiple_tweets(conn, list_of_tweets):
 	: param conn: database connection
 	: param list_of_tweets: tweets encapsulated as list of lists
 	"""
+	pass
 
-	
 # bulk tweet collection - collect tweets as list of lists
 # check for and remove duplicates
 
