@@ -43,8 +43,17 @@ def insert_multiple_tweets(conn, list_of_tweets):
 	Bulk insert multiple tweets
 	: param conn: database connection
 	: param list_of_tweets: tweets encapsulated as list of lists
+		a list of all tweets, where each tweet contains 6 elements:
+		'id', 'user', 'create_date', 'tweet', 'favorite', 'retweet'
 	"""
-	pass
+	sql = '''
+	INSERT INTO tweets(id, user, create_date, tweet, favorite, retweet)
+	VALUES(?,?,?,?,?,?);
+	'''
+	cur = conn.cursor()
+	cur.executemany(sql, list_of_tweets)
+
+
 
 # bulk tweet collection - collect tweets as list of lists
 # check for and remove duplicates
